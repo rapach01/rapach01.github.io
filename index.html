@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arthur Rapach — Back-End Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --accent: #7fff6e;
+    --accent2: #3df0e0;
+    --muted: #444;
+    --text: #e8e8e8;
+    --text-dim: #888;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.35;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    padding: 1.5rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    z-index: 100;
+    border-bottom: 1px solid #1a1a1a;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
+  .nav-links {
+    display: flex; gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 7rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(127,255,110,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(127,255,110,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(127,255,110,0.07) 0%, transparent 70%);
+    top: -100px; right: -100px;
+    pointer-events: none;
+  }
+
+  .hero-glow2 {
+    position: absolute;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(61,240,224,0.05) 0%, transparent 70%);
+    bottom: 50px; left: 200px;
+    pointer-events: none;
+  }
+
+  .hero-left {
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.2s;
+  }
+
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 9vw, 9rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.35s;
+  }
+
+  .hero-name span {
+    color: var(--accent);
+    display: block;
+  }
+
+  .hero-title {
+    margin-top: 2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.5s;
+  }
+
+  .hero-title strong {
+    color: var(--accent2);
+    font-weight: 400;
+  }
+
+  .hero-desc {
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    color: var(--text-dim);
+    max-width: 420px;
+    line-height: 1.75;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.65s;
+  }
+
+  .hero-cta-row {
+    margin-top: 2.5rem;
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.8s;
+  }
+
+  .btn-primary {
+    padding: 0.85rem 2rem;
+    background: var(--accent);
+    color: #0a0a0a;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(127,255,110,0.3);
+  }
+
+  .btn-outline {
+    padding: 0.85rem 2rem;
+    background: transparent;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--muted);
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── HERO RIGHT ── */
+  .hero-right {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards 0.5s;
+  }
+
+  .hero-terminal {
+    background: #0f1410;
+    border: 1px solid #2a3a2a;
+    padding: 1.5rem 2rem;
+    width: 100%; max-width: 400px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    position: relative;
+    box-shadow: 0 0 60px rgba(127,255,110,0.08);
+  }
+
+  .terminal-bar {
+    display: flex; gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .terminal-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .terminal-dot:nth-child(1) { background: #ff5f57; }
+  .terminal-dot:nth-child(2) { background: #febc2e; }
+  .terminal-dot:nth-child(3) { background: #28c840; }
+
+  .terminal-line { margin-bottom: 0.4rem; color: #666; }
+  .terminal-line .cmd { color: var(--accent); }
+  .terminal-line .val { color: var(--accent2); }
+  .terminal-line .str { color: #ffa07a; }
+  .terminal-line .com { color: #555; font-style: italic; }
+  .terminal-line .key { color: #c792ea; }
+
+  .cursor {
+    display: inline-block;
+    width: 7px; height: 1em;
+    background: var(--accent);
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 3rem; }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 5vw, 5rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    margin-bottom: 3rem;
+  }
+
+  /* ── ABOUT ── */
+  #about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+    border-top: 1px solid #1a1a1a;
+  }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .stat-card {
+    border: 1px solid #1e1e1e;
+    padding: 1.5rem;
+    background: var(--surface);
+    transition: border-color 0.2s;
+  }
+
+  .stat-card:hover { border-color: var(--accent); }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-top: 0.3rem;
+    font-weight: 300;
+  }
+
+  .about-text p {
+    font-size: 1rem;
+    color: var(--text-dim);
+    line-height: 1.85;
+    font-weight: 300;
+    margin-bottom: 1rem;
+  }
+
+  .about-text p strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ── SKILLS ── */
+  #skills { border-top: 1px solid #1a1a1a; }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1px;
+    border: 1px solid #1a1a1a;
+    background: #1a1a1a;
+  }
+
+  .skill-item {
+    background: var(--bg);
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: background 0.2s;
+    cursor: default;
+  }
+
+  .skill-item:hover { background: #111; }
+
+  .skill-icon {
+    font-size: 1.8rem;
+    line-height: 1;
+  }
+
+  .skill-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text);
+    letter-spacing: 0.05em;
+  }
+
+  .skill-bar-track {
+    height: 2px;
+    background: #1e1e1e;
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  .skill-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* ── PROJECTS ── */
+  #projects { border-top: 1px solid #1a1a1a; }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    border: 1px solid #1a1a1a;
+    padding: 2rem;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .project-card:hover { border-color: #333; transform: translateY(-4px); }
+  .project-card:hover::before { transform: scaleX(1); }
+
+  .project-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent2);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .project-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+
+  .project-desc {
+    font-size: 0.875rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .project-arrow {
+    margin-top: 1.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+
+  .project-arrow span { transition: transform 0.2s; }
+  .project-card:hover .project-arrow span { transform: translateX(5px); }
+
+  /* ── CONTACT ── */
+  #contact {
+    border-top: 1px solid #1a1a1a;
+    text-align: center;
+  }
+
+  #contact .section-title { margin-bottom: 1rem; }
+
+  .contact-sub {
+    font-size: 1rem;
+    color: var(--text-dim);
+    margin-bottom: 3rem;
+    font-weight: 300;
+  }
+
+  .contact-links {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .contact-link {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 1rem 1.75rem;
+    border: 1px solid #1e1e1e;
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 2rem 3rem;
+    border-top: 1px solid #1a1a1a;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  footer p {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+  }
+
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  /* Reveal on scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1.25rem 1.5rem; }
+    .nav-links { display: none; }
+    #hero { grid-template-columns: 1fr; padding: 6rem 1.5rem 3rem; }
+    .hero-right { display: none; }
+    section { padding: 4rem 1.5rem; }
+    #about { grid-template-columns: 1fr; gap: 2rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">AR_01</div>
+  <ul class="nav-links">
+    <li><a href="#about">Sobre</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projetos</a></li>
+    <li><a href="#contact">Contato</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="hero-left">
+    <p class="hero-eyebrow">// Back-End Developer · RS, Brasil</p>
+    <h1 class="hero-name">
+      Arthur<br>
+      <span>Rapach</span>
+    </h1>
+    <p class="hero-title">
+      3 anos construindo soluções web robustas &middot; <strong>PHP + MySQL</strong>
+    </p>
+    <p class="hero-desc">
+      Desenvolvedor back-end especializado em criar sistemas eficientes e escaláveis.
+      Graduando em Análise e Desenvolvimento de Sistemas, sempre em busca de aprender mais.
+    </p>
+    <div class="hero-cta-row">
+      <a href="#projects" class="btn-primary">Ver Projetos</a>
+      <a href="#contact" class="btn-outline">Entrar em Contato</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-terminal">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+      </div>
+      <div class="terminal-line"><span class="com">// developer.json</span></div>
+      <div class="terminal-line">{</div>
+      <div class="terminal-line">&nbsp;&nbsp;<span class="key">"nome"</span>: <span class="str">"Arthur Rapach"</span>,</div>
+      <div class="terminal-line">&nbsp;&nbsp;<span class="key">"role"</span>: <span class="str">"Back-End Dev"</span>,</div>
+      <div class="terminal-line">&nbsp;&nbsp;<span class="key">"experiencia"</span>: <span class="val">3</span>,</div>
+      <div class="terminal-line">&nbsp;&nbsp;<span class="key">"stack"</span>: [</div>
+      <div class="terminal-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"PHP"</span>, <span class="str">"MySQL"</span>,</div>
+      <div class="terminal-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"JavaScript"</span>,</div>
+      <div class="terminal-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"Bootstrap"</span></div>
+      <div class="terminal-line">&nbsp;&nbsp;],</div>
+      <div class="terminal-line">&nbsp;&nbsp;<span class="key">"status"</span>: <span class="str">"open_to_work"</span></div>
+      <div class="terminal-line">} <span class="cursor"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-text reveal">
+    <p class="section-label">// 01 — sobre mim</p>
+    <h2 class="section-title">Quem sou</h2>
+    <p>
+      Sou um desenvolvedor back-end com <strong>3 anos de experiência</strong> construindo
+      aplicações web sólidas. Tenho foco em PHP e bancos de dados MySQL, garantindo
+      que cada sistema seja performático e bem estruturado.
+    </p>
+    <p>
+      Atualmente, estou cursando <strong>Análise e Desenvolvimento de Sistemas</strong>
+      e complementando minha formação com cursos técnicos voltados para o mercado.
+    </p>
+    <p>
+      Baseado no <strong>Rio Grande do Sul, Brasil</strong> — disponível para projetos
+      remotos e presenciais.
+    </p>
+  </div>
+
+  <div class="about-stats reveal" style="transition-delay:0.15s">
+    <div class="stat-card">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Anos de experiência</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">7+</div>
+      <div class="stat-label">Repositórios no GitHub</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">4+</div>
+      <div class="stat-label">Tecnologias dominadas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Linhas de código</div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <p class="section-label reveal">// 02 — stack técnica</p>
+  <h2 class="section-title reveal">Tecnologias</h2>
+
+  <div class="skills-grid">
+    <div class="skill-item reveal">
+      <div class="skill-icon">🐘</div>
+      <div class="skill-name">PHP</div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" data-width="88"></div></div>
+    </div>
+    <div class="skill-item reveal" style="transition-delay:0.05s">
+      <div class="skill-icon">🗄️</div>
+      <div class="skill-name">MySQL</div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" data-width="82"></div></div>
+    </div>
+    <div class="skill-item reveal" style="transition-delay:0.1s">
+      <div class="skill-icon">⚡</div>
+      <div class="skill-name">JavaScript</div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" data-width="72"></div></div>
+    </div>
+    <div class="skill-item reveal" style="transition-delay:0.15s">
+      <div class="skill-icon">🅱️</div>
+      <div class="skill-name">Bootstrap</div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" data-width="80"></div></div>
+    </div>
+    <div class="skill-item reveal" style="transition-delay:0.2s">
+      <div class="skill-icon">🌐</div>
+      <div class="skill-name">HTML / CSS</div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" data-width="85"></div></div>
+    </div>
+    <div class="skill-item reveal" style="transition-delay:0.25s">
+      <div class="skill-icon">🐱</div>
+      <div class="skill-name">Git / GitHub</div>
+      <div class="skill-bar-track"><div class="skill-bar-fill" data-width="75"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <p class="section-label reveal">// 03 — projetos</p>
+  <h2 class="section-title reveal">O que construí</h2>
+
+  <div class="projects-grid">
+    <a href="https://github.com/rapach01/Pokedex.js" target="_blank" class="project-card reveal">
+      <div class="project-tag">JavaScript · API</div>
+      <div class="project-name">Pokédex.js</div>
+      <p class="project-desc">
+        Uma Pokédex interativa construída com JavaScript puro, consumindo a PokéAPI para
+        exibir dados detalhados dos Pokémon em tempo real.
+      </p>
+      <div class="project-arrow">Ver no GitHub <span>→</span></div>
+    </a>
+
+    <a href="https://github.com/rapach01/LandingPage" target="_blank" class="project-card reveal" style="transition-delay:0.1s">
+      <div class="project-tag">CSS · HTML</div>
+      <div class="project-name">Landing Page</div>
+      <p class="project-desc">
+        Projeto de landing page responsiva com design moderno, focado em boas
+        práticas de CSS e estruturação semântica do HTML.
+      </p>
+      <div class="project-arrow">Ver no GitHub <span>→</span></div>
+    </a>
+
+    <a href="https://github.com/rapach01/weather_app" target="_blank" class="project-card reveal" style="transition-delay:0.2s">
+      <div class="project-tag">HTML · API</div>
+      <div class="project-name">Weather App</div>
+      <p class="project-desc">
+        Aplicativo de clima que consome API de meteorologia para exibir condições
+        atuais e previsão de qualquer cidade do mundo.
+      </p>
+      <div class="project-arrow">Ver no GitHub <span>→</span></div>
+    </a>
+
+    <a href="https://github.com/rapach01/bettina-arts" target="_blank" class="project-card reveal" style="transition-delay:0.3s">
+      <div class="project-tag">Web · Hack</div>
+      <div class="project-name">Bettina Arts</div>
+      <p class="project-desc">
+        Projeto web desenvolvido para exposição de trabalhos artísticos com
+        interface visual limpa e experiência de navegação fluida.
+      </p>
+      <div class="project-arrow">Ver no GitHub <span>→</span></div>
+    </a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="section-label reveal">// 04 — contato</p>
+  <h2 class="section-title reveal">Bora conversar?</h2>
+  <p class="contact-sub reveal">Aberto a oportunidades, freelas e colaborações.</p>
+
+  <div class="contact-links reveal">
+    <a href="mailto:arthurrapach06@gmail.com" class="contact-link">
+      <span>✉</span> arthurrapach06@gmail.com
+    </a>
+    <a href="https://www.linkedin.com/in/arthur-de-lima-rapach-08461b203/" target="_blank" class="contact-link">
+      <span>in</span> LinkedIn
+    </a>
+    <a href="https://github.com/rapach01" target="_blank" class="contact-link">
+      <span>⌥</span> GitHub
+    </a>
+    <a href="https://twitter.com/rapach_" target="_blank" class="contact-link">
+      <span>𝕏</span> @rapach_
+    </a>
+    <a href="https://instagram.com/arthurrapach" target="_blank" class="contact-link">
+      <span>◎</span> Instagram
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Arthur Rapach — Todos os direitos reservados.</p>
+  <p>Feito com <a href="https://github.com/rapach01">♥ no RS</a></p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        // animate skill bars
+        const bar = e.target.querySelector('.skill-bar-fill');
+        if (bar) bar.style.width = bar.dataset.width + '%';
+      }
+    });
+  }, { threshold: 0.12 });
+
+  reveals.forEach(r => obs.observe(r));
+
+  // Also animate skill bars for items already visible
+  document.querySelectorAll('.skill-bar-fill').forEach(bar => {
+    const item = bar.closest('.skill-item');
+    if (item && item.classList.contains('visible')) {
+      bar.style.width = bar.dataset.width + '%';
+    }
+  });
+</script>
+</body>
+</html>
