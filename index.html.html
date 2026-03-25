@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arthur Rapach — Back-End Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0a0a;--surface:#111;--accent:#7fff6e;--accent2:#3df0e0;--muted:#444;--text:#e8e8e8;--text-dim:#888}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.35;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E")}
+  nav{position:fixed;top:0;left:0;right:0;padding:1.5rem 3rem;display:flex;align-items:center;justify-content:space-between;z-index:100;border-bottom:1px solid #1a1a1a;background:rgba(10,10,10,.85);backdrop-filter:blur(10px)}
+  .nav-logo{font-family:'Space Mono',monospace;font-size:.85rem;color:var(--accent);letter-spacing:.05em}
+  .nav-links{display:flex;gap:2.5rem;list-style:none}
+  .nav-links a{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--text-dim);text-decoration:none;letter-spacing:.12em;text-transform:uppercase;transition:color .2s}
+  .nav-links a:hover{color:var(--accent)}
+  #hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:7rem 3rem 4rem;position:relative;overflow:hidden}
+  .hero-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(127,255,110,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(127,255,110,.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+  .hero-glow{position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(127,255,110,.07) 0%,transparent 70%);top:-100px;right:-100px;pointer-events:none}
+  .hero-glow2{position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(61,240,224,.05) 0%,transparent 70%);bottom:50px;left:200px;pointer-events:none}
+  .hero-left{position:relative;z-index:2}
+  .hero-eyebrow{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:1.5rem;opacity:0;animation:fadeUp .6s ease forwards .2s}
+  .hero-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(5rem,9vw,9rem);line-height:.9;color:var(--text);opacity:0;animation:fadeUp .7s ease forwards .35s}
+  .hero-name span{color:var(--accent);display:block}
+  .hero-title{margin-top:2rem;font-family:'Space Mono',monospace;font-size:.9rem;color:var(--text-dim);opacity:0;animation:fadeUp .7s ease forwards .5s}
+  .hero-title strong{color:var(--accent2);font-weight:400}
+  .hero-desc{margin-top:1.5rem;font-size:1rem;color:var(--text-dim);max-width:420px;line-height:1.75;font-weight:300;opacity:0;animation:fadeUp .7s ease forwards .65s}
+  .hero-cta-row{margin-top:2.5rem;display:flex;gap:1rem;flex-wrap:wrap;opacity:0;animation:fadeUp .7s ease forwards .8s}
+  .btn-primary{padding:.85rem 2rem;background:var(--accent);color:#0a0a0a;font-family:'Space Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:transform .2s,box-shadow .2s}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(127,255,110,.3)}
+  .btn-outline{padding:.85rem 2rem;background:transparent;color:var(--text);font-family:'Space Mono',monospace;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border:1px solid var(--muted);transition:border-color .2s,color .2s}
+  .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+  .hero-right{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;opacity:0;animation:fadeIn 1s ease forwards .5s}
+  .hero-terminal{background:#0f1410;border:1px solid #2a3a2a;padding:1.5rem 2rem;width:100%;max-width:400px;font-family:'Space Mono',monospace;font-size:.78rem;box-shadow:0 0 60px rgba(127,255,110,.08)}
+  .terminal-bar{display:flex;gap:.5rem;margin-bottom:1.5rem}
+  .terminal-dot{width:10px;height:10px;border-radius:50%}
+  .terminal-dot:nth-child(1){background:#ff5f57}
+  .terminal-dot:nth-child(2){background:#febc2e}
+  .terminal-dot:nth-child(3){background:#28c840}
+  .terminal-line{margin-bottom:.4rem;color:#666}
+  .terminal-line .val{color:var(--accent2)}
+  .terminal-line .str{color:#ffa07a}
+  .terminal-line .com{color:#555;font-style:italic}
+  .terminal-line .key{color:#c792ea}
+  .cursor{display:inline-block;width:7px;height:1em;background:var(--accent);vertical-align:text-bottom;animation:blink 1s step-end infinite}
+  section{padding:6rem 3rem}
+  .section-label{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.75rem}
+  .section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,5vw,5rem);line-height:1;margin-bottom:3rem}
+  #about{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;border-top:1px solid #1a1a1a}
+  .about-stats{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem}
+  .stat-card{border:1px solid #1e1e1e;padding:1.5rem;background:var(--surface);transition:border-color .2s}
+  .stat-card:hover{border-color:var(--accent)}
+  .stat-num{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--accent);line-height:1}
+  .stat-label{font-size:.8rem;color:var(--text-dim);margin-top:.3rem;font-weight:300}
+  .about-text p{font-size:1rem;color:var(--text-dim);line-height:1.85;font-weight:300;margin-bottom:1rem}
+  .about-text p strong{color:var(--text);font-weight:500}
+  #skills{border-top:1px solid #1a1a1a}
+  .skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1px;border:1px solid #1a1a1a;background:#1a1a1a}
+  .skill-item{background:var(--bg);padding:2rem 1.5rem;display:flex;flex-direction:column;gap:.75rem;transition:background .2s}
+  .skill-item:hover{background:#111}
+  .skill-icon{font-size:1.8rem;line-height:1}
+  .skill-name{font-family:'Space Mono',monospace;font-size:.8rem;color:var(--text)}
+  .skill-bar-track{height:2px;background:#1e1e1e;overflow:hidden}
+  .skill-bar-fill{height:100%;background:var(--accent);width:0;transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+  #pro-projects{border-top:1px solid #1a1a1a}
+  .pro-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(127,255,110,.08);border:1px solid rgba(127,255,110,.2);padding:.4rem 1rem;margin-bottom:2rem;font-family:'Space Mono',monospace;font-size:.65rem;color:var(--accent);letter-spacing:.15em;text-transform:uppercase}
+  .pro-badge::before{content:'&#9679;';font-size:.5rem;animation:blink 1.5s ease-in-out infinite}
+  .pro-featured{display:grid;gap:0;border:1px solid #1e1e1e;margin-bottom:1.5rem;background:var(--surface);overflow:hidden;transition:border-color .2s}
+  .pro-featured:hover{border-color:#2e2e2e}
+  .pro-featured-img{overflow:hidden;position:relative;background:#0d0d0d;min-height:320px}
+  .img-trigger{display:block;width:100%;height:100%;cursor:zoom-in}
+  .img-trigger img{width:100%;height:100%;object-fit:cover;object-position:top;filter:saturate(.7) brightness(.85);transition:filter .4s,transform .5s;display:block;pointer-events:none}
+  .pro-featured:hover .img-trigger img{filter:saturate(1) brightness(.95);transform:scale(1.02)}
+  .img-zoom-icon{position:absolute;bottom:.75rem;right:.75rem;width:36px;height:36px;background:rgba(0,0,0,.75);border:1px solid #333;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;pointer-events:none;z-index:2;color:var(--accent);font-size:1rem}
+  .pro-featured-img:hover .img-zoom-icon{opacity:1}
+  .pro-featured-info{padding:3rem;display:flex;flex-direction:column;justify-content:center}
+  .pro-number{font-family:'Bebas Neue',sans-serif;font-size:5rem;color:#1a1a1a;line-height:1;margin-bottom:-1rem}
+  .pro-tag{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--accent2);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.75rem}
+  .pro-name{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.03em;margin-bottom:1rem;color:var(--text)}
+  .pro-desc{font-size:.9rem;color:var(--text-dim);line-height:1.75;font-weight:300}
+  .pro-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem}
+  .pro-pill{font-family:'Space Mono',monospace;font-size:.62rem;padding:.3rem .75rem;border:1px solid #2a2a2a;color:var(--text-dim);letter-spacing:.08em}
+  .pro-company{margin-top:1.5rem;font-family:'Space Mono',monospace;font-size:.68rem;color:#444;letter-spacing:.1em}
+  .pro-company span{color:var(--accent)}
+  .pro-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:1.5rem}
+  .pro-card{border:1px solid #1a1a1a;background:var(--surface);overflow:hidden;transition:border-color .2s,transform .2s;position:relative}
+  .pro-card:hover{border-color:#2e2e2e;transform:translateY(-3px)}
+  .pro-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent2),var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
+  .pro-card:hover::before{transform:scaleX(1)}
+  .pro-card-body{padding:1.75rem}
+  #projects{border-top:1px solid #1a1a1a}
+  .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+  .project-card{border:1px solid #141414;background:#0d0d0d;transition:border-color .2s;color:inherit;display:block;overflow:hidden}
+  .project-card:hover{border-color:#2a2a2a}
+  .proj-thumb{position:relative;height:130px;overflow:hidden;background:#0d0d0d;cursor:zoom-in}
+  .proj-thumb img{width:100%;height:100%;object-fit:cover;object-position:top;filter:saturate(.7) brightness(.8);transition:filter .3s,transform .4s;display:block}
+  .proj-thumb:hover img{filter:saturate(1) brightness(.95);transform:scale(1.04)}
+  .proj-thumb-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(10,10,10,.85));pointer-events:none}
+  .proj-thumb-zoom{position:absolute;bottom:.6rem;right:.6rem;width:28px;height:28px;background:rgba(0,0,0,.7);border:1px solid #333;display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:.75rem;opacity:0;transition:opacity .2s;pointer-events:none}
+  .proj-thumb:hover .proj-thumb-zoom{opacity:1}
+  .project-body{padding:1.25rem;text-decoration:none;display:block;color:inherit}
+  .project-tag{font-family:'Space Mono',monospace;font-size:.6rem;color:#555;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.6rem}
+  .project-name{font-family:'Space Mono',monospace;font-size:.85rem;margin-bottom:.5rem;color:var(--text-dim)}
+  .project-desc{font-size:.8rem;color:#555;line-height:1.6;font-weight:300}
+  .project-arrow{margin-top:1rem;font-family:'Space Mono',monospace;font-size:.65rem;color:#444;letter-spacing:.1em;display:flex;align-items:center;gap:.4rem;transition:color .2s;text-decoration:none}
+  .project-card:hover .project-arrow{color:var(--accent2)}
+  .project-arrow span{transition:transform .2s}
+  .project-card:hover .project-arrow span{transform:translateX(4px)}
+  #contact{border-top:1px solid #1a1a1a;text-align:center}
+  #contact .section-title{margin-bottom:1rem}
+  .contact-sub{font-size:1rem;color:var(--text-dim);margin-bottom:3rem;font-weight:300}
+  .contact-links{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap}
+  .contact-link{display:flex;align-items:center;gap:.75rem;padding:1rem 1.75rem;border:1px solid #1e1e1e;background:var(--surface);color:var(--text);text-decoration:none;font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.08em;transition:border-color .2s,color .2s}
+  .contact-link:hover{border-color:var(--accent);color:var(--accent)}
+  footer{padding:2rem 3rem;border-top:1px solid #1a1a1a;display:flex;align-items:center;justify-content:space-between}
+  footer p{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--text-dim)}
+  footer a{color:var(--accent);text-decoration:none}
+  .lightbox-overlay{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.93);align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(8px)}
+  .lightbox-overlay.open{display:flex;animation:fadeIn .2s ease}
+  .lightbox-inner{position:relative;max-width:95vw;max-height:92vh;display:flex;align-items:center;justify-content:center}
+  .lightbox-inner img{max-width:92vw;max-height:88vh;width:auto;height:auto;object-fit:contain;border:1px solid #2a2a2a;box-shadow:0 0 80px rgba(0,0,0,.8);display:block;animation:zoomIn .25s cubic-bezier(.16,1,.3,1)}
+  .lightbox-close{position:fixed;top:1.25rem;right:1.5rem;width:44px;height:44px;background:#1a1a1a;border:1px solid #333;color:var(--text);font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s,color .2s;z-index:10001}
+  .lightbox-close:hover{background:#2a2a2a;border-color:var(--accent);color:var(--accent)}
+  .lightbox-hint{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);font-family:'Space Mono',monospace;font-size:.62rem;color:#444;letter-spacing:.12em;text-transform:uppercase;pointer-events:none;white-space:nowrap}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes blink{50%{opacity:0}}
+  @keyframes zoomIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.visible{opacity:1;transform:translateY(0)}
+  @media(max-width:900px){.pro-featured{grid-template-columns:1fr !important}.pro-featured-img{min-height:220px}.pro-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:768px){nav{padding:1.25rem 1.5rem}.nav-links{display:none}#hero{grid-template-columns:1fr;padding:6rem 1.5rem 3rem}.hero-right{display:none}section{padding:4rem 1.5rem}#about{grid-template-columns:1fr;gap:2rem}.pro-grid{grid-template-columns:1fr}.projects-grid{grid-template-columns:1fr 1fr}footer{flex-direction:column;gap:.5rem;text-align:center}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">AR_01</div>
+  <ul class="nav-links">
+    <li><a href="#about">Sobre</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#pro-projects">Projetos</a></li>
+    <li><a href="#contact">Contato</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <div class="hero-grid-bg"></div><div class="hero-glow"></div><div class="hero-glow2"></div>
+  <div class="hero-left">
+    <p class="hero-eyebrow">// Back-End Developer &middot; RS, Brasil</p>
+    <h1 class="hero-name">Arthur<br><span>Rapach</span></h1>
+    <p class="hero-title">3 anos construindo soluções web robustas &middot; <strong>PHP + MySQL</strong></p>
+    <p class="hero-desc">Desenvolvedor back-end especializado em criar sistemas eficientes e escaláveis. Graduando em Análise e Desenvolvimento de Sistemas, sempre em busca de aprender mais.</p>
+    <div class="hero-cta-row">
+      <a href="#pro-projects" class="btn-primary">Ver Projetos</a>
+      <a href="#contact" class="btn-outline">Entrar em Contato</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-terminal">
+      <div class="terminal-bar"><div class="terminal-dot"></div><div class="terminal-dot"></div><div class="terminal-dot"></div></div>
+      <div class="terminal-line"><span class="com">// developer.json</span></div>
+      <div class="terminal-line">{</div>
+      <div class="terminal-line">&nbsp;&nbsp;<span class="key">"nome"</span>: <span class="str">"Arthur Rapach"</span>,</div>
+      <div class="terminal-line">&nbsp;&nbsp;<span class="key">"role"</span>: <span class="str">"Back-End Dev"</span>,</div>
+      <div class="terminal-line">&nbsp;&nbsp;<span class="key">"experiencia"</span>: <span class="val">3</span>,</div>
+      <div class="terminal-line">&nbsp;&nbsp;<span class="key">"stack"</span>: [<span class="str">"PHP"</span>, <span class="str">"MySQL"</span>,</div>
+      <div class="terminal-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"JavaScript"</span>, <span class="str">"Bootstrap"</span>],</div>
+      <div class="terminal-line">&nbsp;&nbsp;<span class="key">"status"</span>: <span class="str">"open_to_work"</span></div>
+      <div class="terminal-line">} <span class="cursor"></span></div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="about-text reveal">
+    <p class="section-label">// 01 &mdash; sobre mim</p>
+    <h2 class="section-title">Quem sou</h2>
+    <p>Sou um desenvolvedor back-end com <strong>3 anos de experiência</strong> construindo aplicações web sólidas. Tenho foco em PHP e bancos de dados MySQL, garantindo que cada sistema seja performático e bem estruturado.</p>
+    <p>Atualmente, estou cursando <strong>Análise e Desenvolvimento de Sistemas</strong> e complementando minha formação com cursos técnicos voltados para o mercado.</p>
+    <p>Baseado no <strong>Rio Grande do Sul, Brasil</strong> — disponível para projetos remotos e presenciais.</p>
+  </div>
+  <div class="about-stats reveal" style="transition-delay:.15s">
+    <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">Anos de experiência</div></div>
+    <div class="stat-card"><div class="stat-num">10+</div><div class="stat-label">Sistemas entregues</div></div>
+    <div class="stat-card"><div class="stat-num">4+</div><div class="stat-label">Tecnologias dominadas</div></div>
+    <div class="stat-card"><div class="stat-num">&#8734;</div><div class="stat-label">Linhas de código</div></div>
+  </div>
+</section>
+
+<section id="skills">
+  <p class="section-label reveal">// 02 &mdash; stack técnica</p>
+  <h2 class="section-title reveal">Tecnologias</h2>
+  <div class="skills-grid">
+    <div class="skill-item reveal"><div class="skill-icon">&#x1F418;</div><div class="skill-name">PHP</div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="88"></div></div></div>
+    <div class="skill-item reveal" style="transition-delay:.05s"><div class="skill-icon">&#128452;</div><div class="skill-name">MySQL</div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="82"></div></div></div>
+    <div class="skill-item reveal" style="transition-delay:.1s"><div class="skill-icon">&#x26A1;</div><div class="skill-name">JavaScript</div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="72"></div></div></div>
+    <div class="skill-item reveal" style="transition-delay:.15s"><div class="skill-icon">&#x1F171;&#xFE0F;</div><div class="skill-name">Bootstrap</div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="80"></div></div></div>
+    <div class="skill-item reveal" style="transition-delay:.2s"><div class="skill-icon">&#x1F310;</div><div class="skill-name">HTML / CSS</div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="85"></div></div></div>
+    <div class="skill-item reveal" style="transition-delay:.25s"><div class="skill-icon">&#x1F431;</div><div class="skill-name">Git / GitHub</div><div class="skill-bar-track"><div class="skill-bar-fill" data-width="75"></div></div></div>
+  </div>
+</section>
+
+<section id="pro-projects">
+  <div class="reveal">
+    <div class="pro-badge">Empresa Atual &middot; Projetos Profissionais</div>
+    <p class="section-label">// 03 &mdash; experiência profissional</p>
+    <h2 class="section-title">O que construí<br>de verdade</h2>
+  </div>
+
+  <div class="pro-featured reveal" style="grid-template-columns:1.2fr 1fr">
+    <div class="pro-featured-img">
+      <a class="img-trigger" href="#" onclick="openLb('assets/proj1.png','Gerador de Certificados');return false;">
+        <img src="assets/proj1.png" alt="Gerador de Certificados" loading="lazy">
+      </a>
+      <div class="img-zoom-icon">&#x2922;</div>
+    </div>
+    <div class="pro-featured-info">
+      <div class="pro-number">01</div>
+      <div class="pro-tag">Sistema Web &middot; Back-End + Front-End</div>
+      <div class="pro-name">Gerador de Certificados</div>
+      <p class="pro-desc">Sistema completo para criação e emissão de certificados personalizados. Upload de frente e verso, editor CKEditor com variáveis dinâmicas (nome do aluno, curso, data), controle de margens e preview em tempo real antes da geração em PDF.</p>
+      <div class="pro-pills"><span class="pro-pill">PHP</span><span class="pro-pill">MySQL</span><span class="pro-pill">CKEditor</span><span class="pro-pill">JavaScript</span><span class="pro-pill">HTML/CSS</span><span class="pro-pill">PDF</span></div>
+      <div class="pro-company">Desenvolvido na <span>Empresa Atual</span></div>
+    </div>
+  </div>
+
+  <div class="pro-featured reveal" style="grid-template-columns:1fr 1.2fr;transition-delay:.1s">
+    <div class="pro-featured-info">
+      <div class="pro-number">02</div>
+      <div class="pro-tag">Integração de Pagamentos &middot; API</div>
+      <div class="pro-name">Sistema de Cobranças &amp; Parcelas</div>
+      <p class="pro-desc">Módulo financeiro integrado à API do PagSeguro. Gerencia cobranças parceladas com controle de status por parcela (Paga/Pendente) e oferece PIX, Cartão de Crédito e Boleto. Fluxo de criação, notificação e atualização de status automatizado via webhook.</p>
+      <div class="pro-pills"><span class="pro-pill">PHP</span><span class="pro-pill">PagSeguro API</span><span class="pro-pill">MySQL</span><span class="pro-pill">Webhook</span><span class="pro-pill">PIX</span><span class="pro-pill">JavaScript</span></div>
+      <div class="pro-company">Desenvolvido na <span>Empresa Atual</span></div>
+    </div>
+    <div class="pro-featured-img">
+      <a class="img-trigger" href="#" onclick="openLb('assets/proj2.png','Sistema de Cobranças e Parcelas');return false;">
+        <img src="assets/proj2.png" alt="Sistema de Pagamentos" loading="lazy">
+      </a>
+      <div class="img-zoom-icon">&#x2922;</div>
+    </div>
+  </div>
+
+  <div class="pro-featured reveal" style="grid-template-columns:1.2fr 1fr;transition-delay:.2s">
+    <div class="pro-featured-img">
+      <a class="img-trigger" href="#" onclick="openLb('assets/proj3.png','Criador de Atividades');return false;">
+        <img src="assets/proj3.png" alt="Criador de Atividades" loading="lazy">
+      </a>
+      <div class="img-zoom-icon">&#x2922;</div>
+    </div>
+    <div class="pro-featured-info">
+      <div class="pro-number">03</div>
+      <div class="pro-tag">Plataforma EAD &middot; Editor Interativo</div>
+      <div class="pro-name">Criador de Atividades</div>
+      <p class="pro-desc">Editor para criação de atividades com múltiplos tipos de questão: objetiva, múltipla escolha, resposta em texto, vídeo, Zoom/Meeting, imagem e arquivo para download. Rascunho automático, preview em tempo real e painel lateral com tipos de questão.</p>
+      <div class="pro-pills"><span class="pro-pill">PHP</span><span class="pro-pill">JavaScript</span><span class="pro-pill">MySQL</span><span class="pro-pill">Bootstrap</span><span class="pro-pill">Auto-save</span></div>
+      <div class="pro-company">Desenvolvido na <span>Empresa Atual</span></div>
+    </div>
+  </div>
+
+  <div class="pro-featured reveal" style="grid-template-columns:1fr 1.2fr;transition-delay:.3s">
+    <div class="pro-featured-info">
+      <div class="pro-number">04</div>
+      <div class="pro-tag">Plataforma EAD &middot; Gestão de Conteúdo</div>
+      <div class="pro-name">Visualizador de Atividades por Turma</div>
+      <p class="pro-desc">Interface para alunos visualizarem e responderem atividades organizadas por curso e módulo. Exibe progresso individual, indica aulas concluídas, sistema de avaliação por estrelas e navegação lateral com conteúdos agrupados hierarquicamente.</p>
+      <div class="pro-pills"><span class="pro-pill">PHP</span><span class="pro-pill">MySQL</span><span class="pro-pill">JavaScript</span><span class="pro-pill">Bootstrap</span><span class="pro-pill">Módulos</span></div>
+      <div class="pro-company">Desenvolvido na <span>Empresa Atual</span></div>
+    </div>
+    <div class="pro-featured-img">
+      <a class="img-trigger" href="#" onclick="openLb('assets/proj4.png','Visualizador de Atividades por Turma');return false;">
+        <img src="assets/proj4.png" alt="Visualizador de Atividades" loading="lazy">
+      </a>
+      <div class="img-zoom-icon">&#x2922;</div>
+    </div>
+  </div>
+
+  <div class="pro-grid">
+    <div class="pro-card reveal"><div class="pro-card-body">
+      <div class="pro-number" style="font-size:3rem;margin-bottom:0">05</div>
+      <div class="pro-tag">Relatórios &middot; Back-End</div>
+      <div class="pro-name" style="font-size:1.6rem">Relatórios Gerenciais</div>
+      <p class="pro-desc">Diversos relatórios com filtros dinâmicos, exportação e visualização tabulada de dados para gestão interna.</p>
+      <div class="pro-pills"><span class="pro-pill">PHP</span><span class="pro-pill">MySQL</span><span class="pro-pill">Bootstrap</span></div>
+    </div></div>
+    <div class="pro-card reveal" style="transition-delay:.1s"><div class="pro-card-body">
+      <div class="pro-number" style="font-size:3rem;margin-bottom:0">06</div>
+      <div class="pro-tag">CRUD &middot; Formulários</div>
+      <div class="pro-name" style="font-size:1.6rem">Formulários &amp; CRUDs</div>
+      <p class="pro-desc">Múltiplos formulários complexos com validação server-side e client-side, máscaras, uploads e fluxos de aprovação.</p>
+      <div class="pro-pills"><span class="pro-pill">PHP</span><span class="pro-pill">JavaScript</span><span class="pro-pill">MySQL</span></div>
+    </div></div>
+    <div class="pro-card reveal" style="transition-delay:.2s"><div class="pro-card-body">
+      <div class="pro-number" style="font-size:3rem;margin-bottom:0">07+</div>
+      <div class="pro-tag">Outros sistemas</div>
+      <div class="pro-name" style="font-size:1.6rem">E muito mais...</div>
+      <p class="pro-desc">Integrações com APIs externas, módulos de controle de acesso, dashboards administrativos e automações internas.</p>
+      <div class="pro-pills"><span class="pro-pill">PHP</span><span class="pro-pill">API REST</span><span class="pro-pill">MySQL</span></div>
+    </div></div>
+  </div>
+</section>
+
+<section id="projects">
+  <p class="section-label reveal">// 04 &mdash; projetos pessoais</p>
+  <h2 class="section-title reveal" style="font-size:clamp(2rem,3.5vw,3.5rem)">Estudos &amp; Experimentações</h2>
+  <div class="projects-grid">
+
+    <div class="project-card reveal">
+      <div class="proj-thumb" onclick="openLb('assets/proj5.png','Bettina Arts - Landing Page')">
+        <img src="assets/proj5.png" alt="Bettina Arts">
+        <div class="proj-thumb-overlay"></div>
+        <div class="proj-thumb-zoom">&#x2922;</div>
+      </div>
+      <div class="project-body">
+        <div class="project-tag">CSS &middot; HTML &middot; Landing Page</div>
+        <div class="project-name">Bettina Arts</div>
+        <p class="project-desc">Landing page para jogos pedagógicos criativos. Gradient hero, seções de sobre, serviços e contato.</p>
+        <a href="https://github.com/rapach01/bettina-arts" target="_blank" class="project-arrow">GitHub <span>&#8594;</span></a>
+      </div>
+    </div>
+
+    <div class="project-card reveal" style="transition-delay:.05s">
+      <div class="project-body" style="padding-top:1.5rem">
+        <div class="project-tag">JavaScript &middot; API</div>
+        <div class="project-name">Pokédex.js</div>
+        <p class="project-desc">Pokédex interativa consumindo a PokéAPI com JavaScript puro.</p>
+        <a href="https://github.com/rapach01/Pokedex.js" target="_blank" class="project-arrow">GitHub <span>&#8594;</span></a>
+      </div>
+    </div>
+
+    <div class="project-card reveal" style="transition-delay:.1s">
+      <div class="project-body" style="padding-top:1.5rem">
+        <div class="project-tag">HTML &middot; API</div>
+        <div class="project-name">Weather App</div>
+        <p class="project-desc">App de clima consumindo API de meteorologia em tempo real.</p>
+        <a href="https://github.com/rapach01/weather_app" target="_blank" class="project-arrow">GitHub <span>&#8594;</span></a>
+      </div>
+    </div>
+
+    <div class="project-card reveal" style="transition-delay:.15s">
+      <div class="project-body" style="padding-top:1.5rem">
+        <div class="project-tag">CSS &middot; HTML</div>
+        <div class="project-name">Landing Page</div>
+        <p class="project-desc">Landing page responsiva com foco em boas práticas de CSS.</p>
+        <a href="https://github.com/rapach01/LandingPage" target="_blank" class="project-arrow">GitHub <span>&#8594;</span></a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="contact">
+  <p class="section-label reveal">// 05 &mdash; contato</p>
+  <h2 class="section-title reveal">Bora conversar?</h2>
+  <p class="contact-sub reveal">Aberto a oportunidades, freelas e colaborações.</p>
+  <div class="contact-links reveal">
+    <a href="mailto:arthurrapach06@gmail.com" class="contact-link">&#x2709; arthurrapach06@gmail.com</a>
+    <a href="https://www.linkedin.com/in/arthur-de-lima-rapach-08461b203/" target="_blank" class="contact-link">in LinkedIn</a>
+    <a href="https://github.com/rapach01" target="_blank" class="contact-link">&#x2325; GitHub</a>
+    <a href="https://twitter.com/rapach_" target="_blank" class="contact-link">&#x1D54F; @rapach_</a>
+    <a href="https://instagram.com/arthurrapach" target="_blank" class="contact-link">&#9678; Instagram</a>
+  </div>
+</section>
+
+<footer>
+  <p>&#169; 2026 Arthur Rapach &mdash; Todos os direitos reservados.</p>
+  <p>Feito com <a href="https://github.com/rapach01">&#9829; no RS</a></p>
+</footer>
+
+<div class="lightbox-overlay" id="lightbox" onclick="if(event.target===this)closeLb()">
+  <button class="lightbox-close" onclick="closeLb()">&times;</button>
+  <div class="lightbox-inner"><img id="lb-img" src="" alt=""></div>
+  <p class="lightbox-hint">toque fora ou ESC para fechar</p>
+</div>
+
+<script>
+  function openLb(src, alt) {
+    document.getElementById('lb-img').src = src;
+    document.getElementById('lb-img').alt = alt || '';
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLb() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeLb(); });
+
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        var bar = e.target.querySelector('.skill-bar-fill');
+        if(bar) bar.style.width = bar.dataset.width + '%';
+      }
+    });
+  }, {threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(function(r){ obs.observe(r); });
+</script>
+</body>
+</html>
